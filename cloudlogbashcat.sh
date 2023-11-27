@@ -31,6 +31,20 @@ delay=1
 # load in config ...
 source cloudlogbashcat.conf
 
+# Pre-flight check: Is curl available?
+if which curl >/dev/null 2>&1; then
+    true
+else
+    echo "curl not found -- please install or change \$PATH"
+    exit 2
+fi
+
+# Debug²: With DEBUG=2 show all executed lines and break if any cmd fails
+if [ "$DEBUG" -gt 1 ]; then
+    set -xeuo pipefail
+fi
+
+
 simpleArg() {
     local arg="$1"
     local type=${arg%%:*} val=${arg#*:}
@@ -106,7 +120,7 @@ while true; do
 
 
 		
-  if [ $rigFreq -ne $rigOldFreq  ] || [ "$rigMode" != "$rigOldMode"  ]; then
+  if [ 0$rigFreq -ne 0$rigOldFreq -o  "$rigMode" != "$rigOldMode"  ]; then
     # rig freq or mode changed, update Cloudlog
     [[ $DEBUG -eq 1 ]] && printf  "%-10d   %-6s\n" $rigFreq $rigMode
     rigOldFreq=$rigFreq
